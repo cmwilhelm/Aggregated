@@ -1,4 +1,7 @@
+.nuget/NuGet.exe
+
 Build/Output/
+Build/Packages/
 obj/
 
 *.suo
