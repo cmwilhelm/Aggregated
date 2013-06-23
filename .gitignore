@@ -1,0 +1,6 @@
+Build/Output/
+obj/
+
+*.suo
+*.user
+
