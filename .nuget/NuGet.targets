@@ -51,7 +51,9 @@
         <NonInteractiveSwitch Condition=" '$(VisualStudioVersion)' != '' AND '$(OS)' == 'Windows_NT' ">-NonInteractive</NonInteractiveSwitch>
         
         <!-- Commands -->
-        <RestoreCommand>$(NuGetCommand) install "$(PackagesConfig)" -source "$(PackageSources)"  $(NonInteractiveSwitch) $(RequireConsentSwitch) -solutionDir "$(SolutionDir) " </RestoreCommand>
+        <SolutionDirParsed Condition=" '$(OS)' == 'Windows_NT' ">$(SolutionDir) </SolutionDirParsed>
+        <SolutionDirParsed Condition=" '$(OS)' != 'Windows_NT' ">$(SolutionDir)</SolutionDirParsed>
+        <RestoreCommand>$(NuGetCommand) install "$(PackagesConfig)" -source "$(PackageSources)"  $(NonInteractiveSwitch) $(RequireConsentSwitch) -solutionDir "$(SolutionDirParsed)" </RestoreCommand>
         <BuildCommand>$(NuGetCommand) pack "$(ProjectPath)" -Properties Configuration=$(Configuration) $(NonInteractiveSwitch) -OutputDirectory "$(PackageOutputDir)" -symbols</BuildCommand>
 
         <!-- We need to ensure packages are restored prior to assembly resolve -->
@@ -78,8 +80,29 @@
         <MsBuild Targets="_DownloadNuGet" Projects="$(MSBuildThisFileFullPath)" Properties="Configuration=NOT_IMPORTANT;DownloadNuGetExe=$(DownloadNuGetExe)" />
     </Target>
 
+    <PropertyGroup Condition=" '$(OS)' == 'Windows_NT'">
+        <DownloaderSourcePath>$([System.IO.Path]::Combine($(SolutionDir), "Build\Downloader\Downloader.cs"))</DownloaderSourcePath>
+        <DownloaderExePath>$([System.IO.Path]::Combine($(SolutionDir), "Build\Output\Downloader.exe"))</DownloaderExePath>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(OS)' != 'Windows_NT'">
+        <DownloaderSourcePath>$(SolutionDir)Build/Downloader/Downloader.cs</DownloaderSourcePath>
+        <DownloaderExePath>$(SolutionDir)Build/Output/Downloader.exe</DownloaderExePath>
+    </PropertyGroup>
+
+    <Target Name="_CompileDownloader">
+        <CSC
+            Sources="$(DownloaderSourcePath)"
+            OutputAssembly="$(DownloaderExePath)">
+            <Output TaskParameter="OutputAssembly" ItemName="EXEFile" />
+        </CSC>
+        <Message Text="Compiled Downloader" />
+    </Target>
+
     <Target Name="_DownloadNuGet">
-        <DownloadNuGet OutputFilename="$(NuGetExePath)" Condition=" '$(DownloadNuGetExe)' == 'true' AND !Exists('$(NuGetExePath)')" />
+        <CallTarget Targets="_CompileDownloader" />
+        <Exec Command="$(SolutionDir)/Build/Output/Downloader.exe https://nuget.org/nuget.exe $(NuGetExePath)" />
+        <Message Text="Downloaded NuGet" />
     </Target>
 
     <Target Name="RestorePackages" DependsOnTargets="CheckPrerequisites">
@@ -99,35 +122,4 @@
               LogStandardErrorAsError="true"
               Condition=" '$(OS)' == 'Windows_NT' " />
     </Target>
-    
-    <UsingTask TaskName="DownloadNuGet" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
-        <ParameterGroup>
-            <OutputFilename ParameterType="System.String" Required="true" />
-        </ParameterGroup>
-        <Task>
-            <Reference Include="System.Core" />
-            <Using Namespace="System" />
-            <Using Namespace="System.IO" />
-            <Using Namespace="System.Net" />
-            <Using Namespace="Microsoft.Build.Framework" />
-            <Using Namespace="Microsoft.Build.Utilities" />
-            <Code Type="Fragment" Language="cs">
-                <![CDATA[
-                try {
-                    OutputFilename = Path.GetFullPath(OutputFilename);
-
-                    Log.LogMessage("Downloading latest version of NuGet.exe...");
-                    WebClient webClient = new WebClient();
-                    webClient.DownloadFile("https://nuget.org/nuget.exe", OutputFilename);
-
-                    return true;
-                }
-                catch (Exception ex) {
-                    Log.LogErrorFromException(ex);
-                    return false;
-                }
-            ]]>
-            </Code>
-        </Task>
-    </UsingTask>
 </Project>
