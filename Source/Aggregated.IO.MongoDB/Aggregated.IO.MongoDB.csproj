@@ -58,6 +58,21 @@
     <Compile Include="IDocument.cs" />
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\FeedRepository.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Aggregated.Common\Aggregated.Common.csproj">
+      <Project>{D4DC9775-AFDB-4D9A-9208-8FD676BD1B14}</Project>
+      <Name>Aggregated.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Aggregated.IO\Aggregated.IO.csproj">
+      <Project>{D3B3D54D-79F8-4755-AB0F-CF99984F7BD6}</Project>
+      <Name>Aggregated.IO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Aggregated.Model\Aggregated.Model.csproj">
+      <Project>{40624AC7-A5E6-46B0-B94F-DB6D7F649DD9}</Project>
+      <Name>Aggregated.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
