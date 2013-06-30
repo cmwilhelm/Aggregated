@@ -51,6 +51,13 @@ namespace Aggregated.IO.MongoDB.Repositories
                 .Select(Convert);
         }
 
+        public IEnumerable<SnapshotModel> RetrieveAll()
+        {
+            return this.collection
+                .FindAll()
+                .Select(Convert);
+        }
+
         public void Update(SnapshotModel model)
         {
             this.Update(model.AsEnumerable());
