@@ -11,6 +11,7 @@ namespace Aggregated.IO
 
         T Retrieve(string id);
         IEnumerable<T> Retrieve(IEnumerable<string> ids);
+        IEnumerable<T> RetrieveAll();
 
         void Update(T model);
         void Update(IEnumerable<T> models);
