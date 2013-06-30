@@ -51,6 +51,13 @@ namespace Aggregated.IO.MongoDB.Repositories
                 .Select(Convert);
         }
 
+        public IEnumerable<FeedModel> RetrieveAll()
+        {
+            return this.feedCollectionFactory.Make()
+                .FindAll()
+                .Select(Convert);
+        }
+
         public void Update(FeedModel model)
         {
             this.Update(model.AsEnumerable());
