@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Well, hello there</title>
+  <link rel="stylesheet" type="text/css" href="style/css/main.css" />
+  <link rel="stylesheet" type="text/css" href="style/css/font-awesome/css/font-awesome.min.css" />
+</head>
+
+<body>
+
+<ul id="articleList" data-bind="foreach: listings">
+  <li>
+    <span class="title" data-bind="text: title"></span>
+    <span class="date" data-bind="text: date"></span>
+    <span class="actions">
+      <a class="expand" href="#" data-bind="click: $parent.toggleExpand">
+        <i class="icon-fighter-jet"></i>
+        <span data-bind="text: expanded() ? 'collapse' : 'expand'"></span>
+      </a>
+    </span>
+    <div class="blurb" data-bind="{text: blurb, slideVisible: expanded()}"></div>
+  </li>
+</ul>
+
+<script src="js/libs/jquery/jquery-2.0.2.min.js"></script>
+<script src="js/libs/knockout-2.2.1.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+
+</html>
