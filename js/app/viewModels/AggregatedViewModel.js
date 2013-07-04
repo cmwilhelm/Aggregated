@@ -1,7 +1,8 @@
-/* app/AggregatedViewModel */
-/* main app ViewModel */
+/* app/viewModels/AggregatedViewModel */
 
-define(["knockout", "viewModels/ListingViewModel"], function (ko, ListingViewModel) {
+/* MAIN APP VIEWMODEL */
+
+define(["knockout", "viewModels/ListingViewModel", "bindingHandlers/slideVisible"], function (ko, ListingViewModel) {
 
   var AggregatedViewModel = new function () {
     var self = this;
