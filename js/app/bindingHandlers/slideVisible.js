@@ -12,7 +12,7 @@ define(["jquery", "knockout"], function ($, ko) {
     },
     update : function (element, valueAccessor) {
       // On update, slide up/down
-      $(element)['slide' + (valueAccessor() ? 'Down' : 'Up')]();
+      $(element).stop(true, false)['slide' + (valueAccessor() ? 'Down' : 'Up')]();
     }
   };
   
